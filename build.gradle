@@ -1,0 +1,22 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '2.1.10'
+}
+
+group = 'FromObjectsToFunctions'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.http4k:http4k-server-jetty:5.32.2.0"
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(21)
+}
