@@ -1,7 +1,6 @@
 package FromObjectsToFunctions
 
 import org.http4k.core.*
-import org.http4k.routing.RouterDescription
 import org.http4k.routing.bind
 import org.http4k.routing.path
 import org.http4k.routing.routes
@@ -23,11 +22,13 @@ data class Zettai(val lists:Map<User, List<ToDoList>>): HttpHandler {
     )
     override fun invoke(req: Request): Response = routes(req)
 
-    private fun showlist(request: Request): Response =
-        request.let(::extractListData)
-            .let(::fetchListContent)
-            .let(::renderHtml)
-            .let(::createResponse)
+    val processFun =
+        ::extractListData andThen
+        ::fetchListContent andThen
+        ::renderHtml andThen
+        ::createResponse
+
+    private fun showlist(request: Request): Response = processFun(request)
 
     fun extractListData(request: Request): Pair<User, ListName> {
         val user = request.path("user").orEmpty()
@@ -69,3 +70,7 @@ data class ToDoItem(val description: String)
 enum class ToDoStatus { Todo, Inprogress, Done, Blocked }
 data class HtmlPage(val raw:String)
 
+typealias FUN<A, B> = (A) -> B
+
+// 2.1
+infix fun <A, B, C> FUN<A, B>.andThen(other: FUN<B, C>): FUN<A, C> = { a -> other(this(a)) }
