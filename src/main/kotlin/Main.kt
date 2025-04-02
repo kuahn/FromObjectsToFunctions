@@ -74,3 +74,25 @@ typealias FUN<A, B> = (A) -> B
 
 // 2.1
 infix fun <A, B, C> FUN<A, B>.andThen(other: FUN<B, C>): FUN<A, C> = { a -> other(this(a)) }
+
+// 2.2
+class FunStack<TYPE> {
+    private val stack = mutableListOf<TYPE>()
+
+    fun push(item: TYPE) : FunStack<TYPE> {
+        return FunStack<TYPE>().apply {
+            stack.add(item)
+        }
+    }
+
+    fun pop(): Pair<FunStack<TYPE>, TYPE> {
+        return Pair(
+            FunStack<TYPE>().apply {
+                stack.removeAt(stack.size - 1)
+            },
+            stack.last()
+        )
+    }
+
+    fun size(): Int = stack.size
+}
